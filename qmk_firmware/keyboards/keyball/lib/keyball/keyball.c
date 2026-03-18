@@ -135,6 +135,9 @@ static void add_scroll_div(int8_t delta) {
     keyball_set_scroll_div(v < 1 ? 1 : v);
 }
 
+static uint16_t movement_size_of(report_mouse_t *rep) {
+    return abs(rep->x) + abs(rep->y);
+}
 //////////////////////////////////////////////////////////////////////////////
 // Pointing device driver
 
@@ -311,10 +314,6 @@ static uint16_t get_auto_mouse_keep_time(void) {
 #else
         return keyball_get_auto_mouse_timeout();
 #endif
-}
-
-static uint16_t movement_size_of(report_mouse_t *rep) {
-    return abs(rep->x) + abs(rep->y);
 }
 
 // override qmk function:
