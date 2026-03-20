@@ -788,9 +788,11 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             keyball.total_mouse_movement = 0;
             keyball_auto_mouse_mark_activity();
         } else {
-            // Release AML for any other key.
-            set_auto_mouse_timeout(0);
-            keyball.total_mouse_movement = 0;
+            // Keep AML for mouse keys, release for all other keys.
+            if (!is_mouse_record_kb(keycode, record) && !IS_MOUSEKEY(keycode)) {
+                set_auto_mouse_timeout(0);
+                keyball.total_mouse_movement = 0;
+            }
         }
     }
 #endif
