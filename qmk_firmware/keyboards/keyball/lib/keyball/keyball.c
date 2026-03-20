@@ -788,20 +788,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             keyball.total_mouse_movement = 0;
             keyball_auto_mouse_mark_activity();
         } else {
-            // Return to default layer on normal character keys.
-            if ((keycode >= KC_A && keycode <= KC_Z) ||
-                keycode == KC_SPACE) {
-                set_auto_mouse_timeout(0);
-                keyball.total_mouse_movement = 0;
-            }
-            // For QK_MODS keycodes with character payload, deactivate as well.
-            if (keycode_raw >= QK_MODS && keycode_raw <= QK_MODS_MAX) {
-                uint8_t kc = keycode_raw & 0xff;
-                if (kc >= KC_A && kc <= KC_Z) {
-                    set_auto_mouse_timeout(0);
-                    keyball.total_mouse_movement = 0;
-                }
-            }
+            // Release AML for any other key.
+            set_auto_mouse_timeout(0);
+            keyball.total_mouse_movement = 0;
         }
     }
 #endif
