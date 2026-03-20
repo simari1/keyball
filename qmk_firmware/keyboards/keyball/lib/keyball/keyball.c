@@ -742,6 +742,13 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         set_auto_mouse_timeout(keyball_get_auto_mouse_timeout());
         keyball.total_mouse_movement = 0;
     }
+    // Keep auto mouse layer from deactivating when using shortcuts such as Ctrl+C/Ctrl+V.
+    if (record->event.pressed && layer_state_cmp(layer_state, AUTO_MOUSE_DEFAULT_LAYER) && (get_mods() & MOD_MASK_CTRL)) {
+        if (keycode >= KC_A && keycode <= KC_Z) {
+            set_auto_mouse_timeout(get_auto_mouse_keep_time());
+            keyball.total_mouse_movement = 0;
+        }
+    }
 #endif
 
     switch (keycode) {
