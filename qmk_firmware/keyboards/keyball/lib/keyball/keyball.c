@@ -343,6 +343,7 @@ bool auto_mouse_activation(report_mouse_t mouse_report) {
 
     if (mouse_report.buttons) {
         keyball_auto_mouse_mark_activity();
+        set_auto_mouse_timeout(get_auto_mouse_keep_time());
         return true;
     }
 
@@ -748,6 +749,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
+    uint16_t keycode_raw = keycode;
     // strip QK_MODS part.
     if (keycode >= QK_MODS && keycode <= QK_MODS_MAX) {
         keycode &= 0xff;
@@ -768,15 +770,16 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 case KC_C:
                 case KC_V:
                 case KC_X:
+                case KC_Z:
                     keep = true;
                     break;
             }
         }
         // Handle QK_MODS macros like LCTL(KC_C) when the keycode has modifiers encoded.
-        if (!keep && keycode >= QK_MODS && keycode <= QK_MODS_MAX) {
-            uint8_t kc = keycode & 0xff;
-            uint8_t mods = (keycode >> 8) & 0xff;
-            if ((mods & MOD_MASK_CTRL) && (kc == KC_C || kc == KC_V || kc == KC_X)) {
+        if (!keep && keycode_raw >= QK_MODS && keycode_raw <= QK_MODS_MAX) {
+            uint8_t kc = keycode_raw & 0xff;
+            uint8_t mods = (keycode_raw >> 8) & 0xff;
+            if ((mods & MOD_MASK_CTRL) && (kc == KC_C || kc == KC_V || kc == KC_X || kc == KC_Z)) {
                 keep = true;
             }
         }
@@ -784,6 +787,21 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             set_auto_mouse_timeout(get_auto_mouse_keep_time());
             keyball.total_mouse_movement = 0;
             keyball_auto_mouse_mark_activity();
+        } else {
+            // Return to default layer on normal character keys.
+            if ((keycode >= KC_A && keycode <= KC_Z) ||
+                keycode == KC_SPACE) {
+                set_auto_mouse_timeout(0);
+                keyball.total_mouse_movement = 0;
+            }
+            // For QK_MODS keycodes with character payload, deactivate as well.
+            if (keycode_raw >= QK_MODS && keycode_raw <= QK_MODS_MAX) {
+                uint8_t kc = keycode_raw & 0xff;
+                if (kc >= KC_A && kc <= KC_Z) {
+                    set_auto_mouse_timeout(0);
+                    keyball.total_mouse_movement = 0;
+                }
+            }
         }
     }
 #endif
