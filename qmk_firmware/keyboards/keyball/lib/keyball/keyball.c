@@ -316,21 +316,37 @@ static uint16_t get_auto_mouse_keep_time(void) {
 #endif
 }
 
+static uint32_t keyball_auto_mouse_last_activity = 0;
+
+static void keyball_auto_mouse_mark_activity(void) {
+    keyball_auto_mouse_last_activity = timer_read32();
+}
+
 // override qmk function:
 //  https://github.com/qmk/qmk_firmware/blob/0.22.14/quantum/pointing_device/pointing_device_auto_mouse.c#L208-L221
 // activate auto mouse layer when mouse movement exceeds the threshold.
 bool auto_mouse_activation(report_mouse_t mouse_report) {
+    uint32_t now = timer_read32();
+    if (layer_state_cmp(layer_state, AUTO_MOUSE_DEFAULT_LAYER)) {
+        if (TIMER_DIFF_32(now, keyball_auto_mouse_last_activity) < get_auto_mouse_timeout()) {
+            return true;
+        }
+    }
+
     keyball.total_mouse_movement += movement_size_of(&mouse_report);
     if (AML_ACTIVATE_THRESHOLD < keyball.total_mouse_movement) {
         keyball.total_mouse_movement = 0;
-        if (get_auto_mouse_timeout() != get_auto_mouse_keep_time()) {
-            // keep AML if mouse is moving with "short timeout".
-            set_auto_mouse_timeout(get_auto_mouse_keep_time());
-        }
+        keyball_auto_mouse_mark_activity();
+        set_auto_mouse_timeout(get_auto_mouse_keep_time());
         return true;
-    } else {
-        return mouse_report.buttons;
     }
+
+    if (mouse_report.buttons) {
+        keyball_auto_mouse_mark_activity();
+        return true;
+    }
+
+    return false;
 }
 #endif
 
@@ -638,6 +654,7 @@ void keyball_handle_auto_mouse_layer_change(layer_state_t state) {
     // go into AML
     if (!layer_state_cmp(last_state, AUTO_MOUSE_DEFAULT_LAYER) && layer_state_cmp(state, AUTO_MOUSE_DEFAULT_LAYER)) {
         keyball.total_mouse_movement = 0;
+        keyball_auto_mouse_mark_activity();
     } // go out AML
     else if (layer_state_cmp(last_state, AUTO_MOUSE_DEFAULT_LAYER) && !layer_state_cmp(state, AUTO_MOUSE_DEFAULT_LAYER)) {
         set_auto_mouse_timeout(get_auto_mouse_keep_time());
@@ -766,6 +783,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         if (keep) {
             set_auto_mouse_timeout(get_auto_mouse_keep_time());
             keyball.total_mouse_movement = 0;
+            keyball_auto_mouse_mark_activity();
         }
     }
 #endif
