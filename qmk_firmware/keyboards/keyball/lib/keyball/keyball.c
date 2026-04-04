@@ -762,26 +762,78 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         keyball.total_mouse_movement = 0;
     }
 
-    // Keep auto mouse layer from deactivating while the user types Ctrl+ shortcuts.
+    // Keep auto mouse layer from deactivating while the user types Ctrl+ shortcuts or presses mouse keys.
     if (record->event.pressed && layer_state_cmp(layer_state, AUTO_MOUSE_DEFAULT_LAYER)) {
         bool keep = false;
-        if (get_mods() & MOD_MASK_CTRL) {
+        
+        // Keep AML active for mouse keys/records
+        if (is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode)) {
+            keep = true;
+        }
+        
+        // Keep AML active for Ctrl+ shortcuts
+        if (!keep && get_mods() & MOD_MASK_CTRL) {
             switch (keycode) {
                 case KC_C:
                 case KC_V:
                 case KC_X:
                 case KC_Z:
+                case KC_A:
                     keep = true;
                     break;
             }
         }
-        // Handle QK_MODS macros like LCTL(KC_C) when the keycode has modifiers encoded.
+        // Keep AML active for Alt+ shortcuts
+        if (!keep && get_mods() & MOD_MASK_ALT) {
+            switch (keycode) {
+                case KC_TAB:
+                case KC_F4:
+                    keep = true;
+                    break;
+            }
+        }
+        // Keep AML active for GUI (Windows)+ shortcuts
+        if (!keep && get_mods() & MOD_MASK_GUI) {
+            switch (keycode) {
+                case KC_V:
+                case KC_X:
+                case KC_C:
+                    keep = true;
+                    break;
+            }
+        }
+        // Handle QK_MODS macros when the keycode has modifiers encoded.
         if (!keep && keycode_raw >= QK_MODS && keycode_raw <= QK_MODS_MAX) {
             uint8_t kc = keycode_raw & 0xff;
             uint8_t mods = (keycode_raw >> 8) & 0xff;
-            if ((mods & MOD_MASK_CTRL) && (kc == KC_C || kc == KC_V || kc == KC_X || kc == KC_Z)) {
+            bool is_shortcut = false;
+            
+            // Ctrl+ shortcuts
+            if (mods & MOD_MASK_CTRL) {
+                if (kc == KC_C || kc == KC_V || kc == KC_X || kc == KC_Z || kc == KC_A) {
+                    is_shortcut = true;
+                }
+            }
+            // Alt+ shortcuts
+            if (mods & MOD_MASK_ALT) {
+                if (kc == KC_TAB || kc == KC_F4) {
+                    is_shortcut = true;
+                }
+            }
+            // GUI+ shortcuts
+            if (mods & MOD_MASK_GUI) {
+                if (kc == KC_V || kc == KC_X || kc == KC_C) {
+                    is_shortcut = true;
+                }
+            }
+            
+            if (is_shortcut) {
                 keep = true;
             }
+        }
+        // Keep AML active when coming from Layer3 with scroll mode enabled
+        if (!keep && layer_state_cmp(keyball.last_layer_state, 3) && keyball.scroll_mode) {
+            keep = true;
         }
         if (keep) {
             set_auto_mouse_timeout(get_auto_mouse_keep_time());
