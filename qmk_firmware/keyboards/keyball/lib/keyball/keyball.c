@@ -213,7 +213,7 @@ __attribute__((weak)) void keyball_on_apply_motion_to_mouse_move(keyball_motion_
 #else
 #    error("unknown Keyball model")
 #endif
-    adjust_mouse_speed(r);  // マウスカーソル加速用
+    // adjust_mouse_speed(r);  // マウスカーソル加速用
 
     // clear motion
     m->x = 0;
