@@ -749,7 +749,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
-    uint16_t keycode_raw = keycode;
+    // uint16_t keycode_raw = keycode;
     // strip QK_MODS part.
     if (keycode >= QK_MODS && keycode <= QK_MODS_MAX) {
         keycode &= 0xff;
