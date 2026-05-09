@@ -29,9 +29,9 @@ enum combo_events {
 const uint16_t PROGMEM jk_combo[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM io_combo[] = {KC_I, KC_O, COMBO_END};
 
-combo_t key_combos[COMBO_COUNT] = {
-    [JK_LEFT_CLICK] = COMBO(jk_combo, KC_BTN1),
-    [IO_RIGHT_CLICK] = COMBO(io_combo, KC_BTN2),
+combo_t key_combos[] = {
+    COMBO(jk_combo, KC_BTN1),
+    COMBO(io_combo, KC_BTN2),
 };
 
 // clang-format off

@@ -48,5 +48,3 @@ SPACE_CADET_ENABLE = no
 GRAVE_ESC_ENABLE = no
 MAGIC_ENABLE = no
 
-# Enable combo for key combinations
-COMBO_ENABLE = yes
