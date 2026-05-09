@@ -79,5 +79,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef LOCKING_RESYNC_ENABLE
 
 // Combo configuration
-#define COMBO_ENABLE
+// COMBO_ENABLE is defined in rules.mk
 #define COMBO_TERM 50  // Time window for combo detection (ms)
