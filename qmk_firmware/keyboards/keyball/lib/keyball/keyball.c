@@ -399,14 +399,14 @@ static void rpc_get_info_invoke(void) {
     keyball_info_t recv = {0};
     if (!transaction_rpc_exec(KEYBALL_GET_INFO, 0, NULL, sizeof(recv), &recv)) {
         if (round < KEYBALL_TX_GETINFO_MAXTRY) {
-            dprintf("keyball:rpc_get_info_invoke: missed #%d\n", round);
+
             return;
         }
     }
     negotiated             = true;
     keyball.that_enable    = true;
     keyball.that_have_ball = recv.ballcnt > 0;
-    dprintf("keyball:rpc_get_info_invoke: negotiated #%d %d\n", round, keyball.that_have_ball);
+
 
     // split keyboard negotiation completed.
 

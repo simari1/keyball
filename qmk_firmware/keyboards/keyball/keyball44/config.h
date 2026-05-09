@@ -77,3 +77,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // To squeeze firmware size
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
+
+// Combo configuration
+#define COMBO_ENABLE
+#define COMBO_TERM 50  // Time window for combo detection (ms)
