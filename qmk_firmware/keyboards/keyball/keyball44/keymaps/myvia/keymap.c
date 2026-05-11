@@ -27,6 +27,7 @@ const uint16_t PROGMEM ik_combo[] = {KC_I, KC_K, COMBO_END};
 combo_t key_combos[] = {
     COMBO(jk_combo, KC_BTN1),
     COMBO(io_combo, KC_BTN2),
+    COMBO(ik_combo, KC_BTN3),
 };
 
 // clang-format off
