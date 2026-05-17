@@ -20,12 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
-const uint16_t PROGMEM jk_combo[] = {KC_J, KC_K, COMBO_END};
+const uint16_t PROGMEM ij_combo[] = {KC_I, KC_J, COMBO_END};
 const uint16_t PROGMEM io_combo[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM ik_combo[] = {KC_I, KC_K, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(jk_combo, KC_BTN1),
+    COMBO(ij_combo, KC_BTN1),
     COMBO(io_combo, KC_BTN2),
     COMBO(ik_combo, KC_BTN3),
 };
