@@ -23,11 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const uint16_t PROGMEM ij_combo[] = {KC_I, KC_J, COMBO_END};
 const uint16_t PROGMEM io_combo[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM ik_combo[] = {KC_I, KC_K, COMBO_END};
+const uint16_t PROGMEM po_combo[] = {KC_P, KC_O, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(ij_combo, KC_BTN1),
     COMBO(io_combo, KC_BTN2),
     COMBO(ik_combo, KC_BTN3),
+    COMBO(po_combo, MO(3)),
 };
 
 // clang-format off
