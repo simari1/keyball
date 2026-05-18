@@ -487,11 +487,11 @@ void keyball_oled_render_ballinfo(void) {
     //     Ball: -12  34   0   0
 
     // 1st line, "Ball" label, mouse x, y, h, and v.
-    oled_write_P(PSTR("Ball\xB1"), false);
-    oled_write(format_4d(keyball.last_mouse.x), false);
-    oled_write(format_4d(keyball.last_mouse.y), false);
-    oled_write(format_4d(keyball.last_mouse.h), false);
-    oled_write(format_4d(keyball.last_mouse.v), false);
+    // oled_write_P(PSTR("Ball\xB1"), false);
+    // oled_write(format_4d(keyball.last_mouse.x), false);
+    // oled_write(format_4d(keyball.last_mouse.y), false);
+    // oled_write(format_4d(keyball.last_mouse.h), false);
+    // oled_write(format_4d(keyball.last_mouse.v), false);
 
     // 2nd line, empty label and CPI
     oled_write_P(PSTR("    \xB1\xBC\xBD"), false);
